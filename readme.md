@@ -5,6 +5,8 @@
 
 Copy files and folders, with glob support.
 
+Base on vladshcherbin/rollup-plugin-copy, extended support dest relative folder.
+
 ## Installation
 
 ```bash
