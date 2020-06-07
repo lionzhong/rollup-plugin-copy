@@ -24,15 +24,19 @@ function renameTarget(target, rename) {
     : rename(parsedPath.name, parsedPath.ext.replace('.', ''))
 }
 
-async function generateCopyTarget(src, dest, { flatten, rename, transform }) {
+async function generateCopyTarget(src, dest, { flatten, rename, transform, destRelative }) {
   if (transform && !await isFile(src)) {
     throw new Error(`"transform" option works only on files: '${src}' must be a file`)
   }
 
   const { base, dir } = path.parse(src)
-  const destinationFolder = (flatten || (!flatten && !dir))
+  let destinationFolder = (flatten || (!flatten && !dir))
     ? dest
     : dir.replace(dir.split('/')[0], dest)
+
+  if (destRelative) {
+    destinationFolder += dir.replace(destRelative, '')
+  }
 
   return {
     src,
@@ -70,7 +74,7 @@ export default function copy(options = {}) {
             throw new Error(`${stringify(target)} target must be an object`)
           }
 
-          const { dest, rename, src, transform, ...restTargetOptions } = target
+          const { dest, rename, src, transform, destRelative, ...restTargetOptions } = target
 
           if (!src || !dest) {
             throw new Error(`${stringify(target)} target must have "src" and "dest" properties`)
@@ -89,13 +93,24 @@ export default function copy(options = {}) {
 
           if (matchedPaths.length) {
             for (const matchedPath of matchedPaths) {
+              const opts = {
+                flatten,
+                rename,
+                transform,
+                destRelative
+              }
+
+              if (destRelative && src.indexOf('/**') > -1) {
+                opts.destRelative = src.substring(0, src.indexOf('/**'))
+              }
+
               const generatedCopyTargets = Array.isArray(dest)
                 ? await Promise.all(dest.map((destination) => generateCopyTarget(
                   matchedPath,
                   destination,
-                  { flatten, rename, transform }
+                  opts
                 )))
-                : [await generateCopyTarget(matchedPath, dest, { flatten, rename, transform })]
+                : [await generateCopyTarget(matchedPath, dest, opts)]
 
               copyTargets.push(...generatedCopyTargets)
             }

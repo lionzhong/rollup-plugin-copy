@@ -1,9 +1,9 @@
 {
   "name": "rollup-plugin-copy",
-  "description": "Copy files and folders using Rollup",
+  "description": "Copy files and folders using Rollup. Base on vladshcherbin/rollup-plugin-copy, extended support dest relative folder.",
   "version": "3.3.0",
-  "author": "Vlad Shcherbin <vlad.shcherbin@gmail.com>",
-  "repository": "vladshcherbin/rollup-plugin-copy",
+  "author": "lionzhong <lionzhongtemp@aliyun.com>",
+  "repository": "lionzhong/rollup-plugin-copy",
   "main": "dist/index.commonjs.js",
   "module": "dist/index.module.js",
   "types": "index.d.ts",
@@ -23,8 +23,8 @@
     "is-plain-object": "^3.0.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.8.3",
-    "@babel/preset-env": "^7.8.3",
+    "@babel/core": "7.10.2",
+    "@babel/preset-env": "7.10.2",
     "babel-jest": "^24.9.0",
     "codecov": "^3.6.1",
     "eslint": "^6.8.0",
